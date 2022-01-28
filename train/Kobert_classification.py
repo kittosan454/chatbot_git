@@ -8,7 +8,7 @@ from tqdm import tqdm
 import torch
 from transformers import AdamW
 from torch.utils.data import dataloader
-from dataloader.wellness import WellnessTextClassificationDataset
+from dataloader.swear_dataloader import Bad_Language_Dataset
 from model.kobert import KoBERTforSequenceClassfication
 
 def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_path, train_step = 0):
@@ -52,7 +52,7 @@ def train(device, epoch, model, optimizer, train_loader, save_step, save_ckpt_pa
 
 if __name__ == '__main__':
     data_path = "./data/wellness_dialog_for_text_classification_train.txt"
-    checkpoint_path ="./checkpoint"
+    checkpoint_path ="../checkpoint"
     save_ckpt_path = f"{checkpoint_path}/kobert-wellnesee-text-classification.pth"
 
     n_epoch = 20          # Num of Epoch

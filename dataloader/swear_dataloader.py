@@ -9,7 +9,7 @@ class WellnessAutoRegressiveDataset(Dataset):
   """Wellness Auto Regressive Dataset"""
 
   def __init__(self,
-               file_path = "../data/wellness_dialog_for_autoregressive2.txt",
+               file_path = "../data/wellness_dialog_for_autoregressive_swear.txt",
                n_ctx = 1024
                ):
     self.file_path = file_path
@@ -18,9 +18,9 @@ class WellnessAutoRegressiveDataset(Dataset):
 
 
     bos_token_id = [self.tokenizer.bos_token_id]
-    # print(bos_token_id)
+    # print(bos_token_id) # 0 임
     eos_token_id = [self.tokenizer.eos_token_id]
-    # print(eos_token_id)
+    # print(eos_token_id) # 1임
     pad_token_id = [self.tokenizer.pad_token_id]
 
     file = open(self.file_path, 'r', encoding='utf-8')
@@ -49,11 +49,10 @@ class WellnessAutoRegressiveDataset(Dataset):
     item = self.data[index]
     return item
 
-class WellnessTextClassificationDataset(Dataset): # 텍스트 분류 모델
-  """Wellness Text Classification Dataset"""
+class Bad_Language_Dataset(Dataset): # 텍스트 분류 모델
   def __init__(self,
-               file_path = "../data/wellness_dialog_for_text_classification.txt",
-               num_label = 359,
+               file_path = "../data/테스트용.txt",
+               num_label = 2,
                device = 'cuda',
                max_seq_len = 512, # KoBERT max_length
                tokenizer = None
@@ -72,6 +71,7 @@ class WellnessTextClassificationDataset(Dataset): # 텍스트 분류 모델
       if not line:
         break
       datas = line.split("    ")
+
       index_of_words = self.tokenizer.encode(datas[0]) # 토크나이저를 받아온다. 그리고 토크나이저 값으로 변경한다.
       token_type_ids = [0] * len(index_of_words) # 토크나이저의 길이만큼 0으로 채운 객체를 만듬, segment A
       attention_mask = [1] * len(index_of_words) # 토크나이저의 길이만큼 1로 채운 객체를 만든다
@@ -86,6 +86,7 @@ class WellnessTextClassificationDataset(Dataset): # 텍스트 분류 모델
 
       # Label
       label = int(datas[1][:-1]) # 맨 오른쪽 값을 제외하고 모두(엔터 포함) 라벨 정수화
+      print(label)
     ########### 데이터 텐서화 이후 딕셔너리로 바꾼다.
       data = {
               'input_ids': torch.tensor(index_of_words).to(self.device), # 입력층
@@ -95,7 +96,8 @@ class WellnessTextClassificationDataset(Dataset): # 텍스트 분류 모델
              }
         # 딕셔너리 형태로 저장한다.
       self.data.append(data)
-      print(self.data)
+
+      # print(self.data)
       # print("wellnes:",device)
     file.close()
 
@@ -106,7 +108,7 @@ class WellnessTextClassificationDataset(Dataset): # 텍스트 분류 모델
     return item
 
 if __name__ == "__main__":
-  dataset = WellnessAutoRegressiveDataset()
-  dataset2 = WellnessTextClassificationDataset()
-  print(dataset)
+  # dataset = WellnessAutoRegressiveDataset()
+  dataset2 = Bad_Language_Dataset()
+  # print(dataset)
   print(dataset2)
